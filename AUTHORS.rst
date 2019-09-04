@@ -1,12 +1,13 @@
 Core contributors
 =================
 
-- `Vikas Yadav <http://github.com/v1k45/>`__
+- `Vikas Yadav <https://github.com/v1k45/>`__
+- `Samuel Girardin <https://github.com/girardinsamuel/>`__
 
 Contributors
 ------------
 
 *In alphabetical order*
 
-- `Fernando Macedo <http://github.com/fgmacedo/>`__
+- `Fernando Macedo <https://github.com/fgmacedo/>`__
 - Your name here :)

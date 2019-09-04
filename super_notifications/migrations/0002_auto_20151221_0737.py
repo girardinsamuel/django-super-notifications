@@ -11,7 +11,7 @@ import jsonfield.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('notify', '0001_initial'),
+        ('super_notifications', '0001_initial'),
     ]
 
     operations = [

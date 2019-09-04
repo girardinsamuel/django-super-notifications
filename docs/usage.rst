@@ -2,7 +2,7 @@
 Using Django Notify
 ===================
 
-This page will describe how to use ``django-notify-x``.
+This page will describe how to use ``django-super-notifications``.
 
 Component details
 =================

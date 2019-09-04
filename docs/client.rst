@@ -2,7 +2,7 @@
 The client-side flow
 ====================
 
-All the `views <modules/views.html>`__ of ``django-notify-x`` are compatible with both, AJAX and non-AJAX requests. The included javascript file helps you control the result of actions performed by user. Common tasks like making notifications fade out, changing background color when a notification is mark as read/ unread are already handled by default javascript functions.
+All the `views <modules/views.html>`__ of ``django-super-notifications`` are compatible with both, AJAX and non-AJAX requests. The included javascript file helps you control the result of actions performed by user. Common tasks like making notifications fade out, changing background color when a notification is mark as read/ unread are already handled by default javascript functions.
 
 Of course, you want things to appear differently for your project, for doing so, you can simply write your own version of the javascript functions and save them in the corresponding templates diretory of app and the things will get overridden easily.
 

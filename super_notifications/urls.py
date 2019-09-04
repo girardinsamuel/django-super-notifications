@@ -3,7 +3,7 @@ try:
 except ImportError:
     from django.urls import url
 
-from notify import views as nf
+from super_notifications import views as nf
 
 app_name = 'notifications'
 

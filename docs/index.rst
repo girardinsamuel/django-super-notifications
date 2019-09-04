@@ -1,4 +1,4 @@
-Django-Notify-X: Notification system for Django.
+django-super-notifications: Notification system for Django.
 ================================================
 
 Contents:

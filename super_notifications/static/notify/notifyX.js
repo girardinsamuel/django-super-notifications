@@ -1,5 +1,5 @@
 /**
- * django-notify-x.
+ * django-super-notifications.
  */
 
 // Variable declaration;

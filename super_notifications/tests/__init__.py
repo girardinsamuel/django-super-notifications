@@ -1,0 +1,1 @@
+from notifications.tests import *

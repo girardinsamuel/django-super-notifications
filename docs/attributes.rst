@@ -2,7 +2,7 @@
 Understanding Notification Attributes
 =====================================
 
-This is a detailed walk through the functioning of ``django-notify-x``. This page will describe the use of Notification Model fields and the ``notify`` signal, so that you can make the most out of it.
+This is a detailed walk through the functioning of ``django-super-notifications``. This page will describe the use of Notification Model fields and the ``notify`` signal, so that you can make the most out of it.
 
 Important fields in Notification Model
 ======================================

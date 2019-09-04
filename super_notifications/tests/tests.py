@@ -1,7 +1,7 @@
 from django.test import TestCase, override_settings
 from django.contrib.auth import get_user_model
-from notify.models import Notification
-from notify.signals import notify
+from notifications.models import Notification
+from notifications.signals import notify
 from django.utils import timezone
 
 try:

@@ -1,4 +1,15 @@
 from django.template.loader import render_to_string
+from six import string_types
+from importlib import import_module
+
+
+def import_callable(path_or_callable):
+    if hasattr(path_or_callable, '__call__'):
+        return path_or_callable
+    else:
+        assert isinstance(path_or_callable, string_types)
+        package, attr = path_or_callable.rsplit('.', 1)
+        return getattr(import_module(package), attr)
 
 
 def render_notification(notification, render_target='', **extra):
@@ -91,7 +102,8 @@ def prefetch_relations(weak_queryset):
             if not related_content_type_id:
                 continue
             related_content_type = ContentType.objects.get_for_id(related_content_type_id)
-            related_object_id = int(getattr(weak_model, gfk_field.fk_field))
+            # related_object_id = int(getattr(weak_model, gfk_field.fk_field))
+            related_object_id = getattr(weak_model, gfk_field.fk_field)
 
             if related_content_type not in data.keys():
                 data[related_content_type] = []
@@ -109,7 +121,8 @@ def prefetch_relations(weak_queryset):
                     if not related_content_type_id:
                         continue
                     related_content_type = ContentType.objects.get_for_id(related_content_type_id)
-                    related_object_id = int(getattr(weak_model, gfk_field.fk_field))
+                    related_object_id = getattr(weak_model, gfk_field.fk_field)
+                    # related_object_id = int(getattr(weak_model, gfk_field.fk_field))
 
                     if related_object_id != model.pk:
                         continue

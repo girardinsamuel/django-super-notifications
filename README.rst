@@ -1,26 +1,31 @@
 ============================
-django-notify-x: quick guide
+django-super-notifications: quick guide
 ============================
 
-.. image:: https://readthedocs.org/projects/django-notify-x/badge/?version=latest
-   :target: http://django-notify-x.readthedocs.org/en/latest/?badge=latest
+.. image:: https://readthedocs.org/projects/django-super-notifications/badge/?version=latest
+   :target: http://django-super-notifications.readthedocs.org/en/latest/?badge=latest
    :alt: Documentation Status
 
-.. image:: https://badge.fury.io/py/django-notify-x.svg
-   :target: https://badge.fury.io/py/django-notify-x
+.. image:: https://badge.fury.io/py/django-super-notifications.svg
+   :target: https://badge.fury.io/py/django-super-notifications
 
-.. image:: https://travis-ci.org/v1k45/django-notify-x.svg
-   :target: https://travis-ci.org/v1k45/django-notify-x
+.. image:: https://travis-ci.org/v1k45/django-super-notifications.svg
+   :target: https://travis-ci.org/v1k45/django-super-notifications
 
 
 Django NotifyX is a reusable app which adds notification system features to your Django app.
 
-It was inspired from `django-notifications`_ , major differences include:
-    - Multipe user notification at once.
+It was inspired from `django-notifications`_ and `pinax-notifications`_, major differences include:
+    - Multiple user notification at once.
     - A different approach for notification updates.
     - Less hassles when trying to format notifications differently according to their types.
     - AJAX support for everything.
-    - And many more.
+    - Different channels (backends) available for sending notifications (email for now) but 
+    possibility to add other backends
+    - Configuration of which kind of notifications the user want to receive
+    and by which channel.
+    - Notifications are queued up (if settings is enabled) to be sent with Celery
+    - REST API for notifications by user or by target object id.
 
 This is just a quick guide to get things to work ASAP. To dive into the details.. `Read the docs`_
 
@@ -32,18 +37,18 @@ Downloading the package
 
 Probably the best way to install is by using `PIP`::
 
-    $ pip install django-notify-x
+    $ pip install django-super-notifications
 
 If you want to stay on the bleeding edge of the app::
 
-    $ git clone https://github.com/v1k45/django-notify-x.git
-    $ cd django-notify-x
+    $ git clone https://github.com/girardinsamuel/django-super-notifications.git
+    $ cd django-super-notifications
     $ python setup.py install
 
 Installing it on your project
 -----------------------------
 
-After the you've installed ``django-notify-x`` in your python enviroment. You have to make an entry of the same in your project ``settings.py`` file::
+After the you've installed ``django-super-notifications`` in your python enviroment. You have to make an entry of the same in your project ``settings.py`` file::
 
     INSTALLED_APPS = (
         ...
@@ -67,7 +72,7 @@ Then ``collectstatic`` to make sure you've copied the JS file for AJAX functiona
 
     $ python manage.py collectstatic
 
-You've successfully installed ``django-notify-x``!
+You've successfully installed ``django-super-notifications``!
 
 Sending notifications
 =====================
@@ -125,7 +130,7 @@ Notification concatenation support
 Notification Concatenation is what you see when you read notifications like **Bob and 64 others liked your status**. A developmental support is available for it, but it only supports Python3 for now.
 
 If you use Python3, you can add this feature to your application.
-Please read instructions on `nf_concat_support <https://github.com/v1k45/django-notify-x/tree/nf_concat_support>`__ branch.
+Please read instructions on `nf_concat_support <https://github.com/girardinsamuel/django-super-notifications/tree/nf_concat_support>`__ branch.
 
 Notification Template tags
 ==========================
@@ -207,4 +212,5 @@ TODO List
 - Convert *Function based views* to *Class Based views*.
 
 .. _django-notifications: https://www.github.com/django-notifications/django-notifications/
-.. _Read the docs: http://django-notify-x.readthedocs.org/en/latest/index.html
+.. _pinax-notifications: https://www.github.com/pinax/pinax-notifications/
+.. _Read the docs: http://django-super-notifications.readthedocs.org/en/latest/index.html

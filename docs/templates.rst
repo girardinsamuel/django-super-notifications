@@ -2,9 +2,9 @@
 Notification and templates
 ==========================
 
-Django's templating system plays a very important role in formatting your notifications without hassles. The templates for ``django-notify-x`` app are supposed to be stored in ``notifications`` directory of your default template directory.
+Django's templating system plays a very important role in formatting your notifications without hassles. The templates for ``django-super-notifications`` app are supposed to be stored in ``notifications`` directory of your default template directory.
 
-As explained in previous chapter, ``django-notify-x`` uses templates to format different kinds of notifications corresponding to the ``nf_type`` of the notification.
+As explained in previous chapter, ``django-super-notifications`` uses templates to format different kinds of notifications corresponding to the ``nf_type`` of the notification.
 
 Templates for notification types
 ================================

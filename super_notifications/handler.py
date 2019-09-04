@@ -1,21 +1,12 @@
-from django import dispatch
-from django.dispatch import receiver
-from notify.models import Notification
+# -*- coding: utf-8 -*-
 from django.utils.translation import ugettext as _
 
-
-notify = dispatch.Signal(providing_args=[
-    'recipient', 'recipient_list',
-    'actor', 'actor_text', 'actor_url',
-    'verb', 'description', 'nf_type',
-    'target', 'target_text', 'target_url',
-    'obj', 'obj_text', 'obj_url',
-    'extra',
-])
+from super_notifications.app_settings import backends
+from super_notifications.models import Notification
+from super_notifications.utils import import_callable
 
 
-@receiver(notify, dispatch_uid='notify_user')
-def notifier(sender, **kwargs):
+def notify_handler(sender, **kwargs):
     recipient = kwargs.pop('recipient', None)
 
     recipient_list = kwargs.pop('recipient_list', None)
@@ -35,6 +26,8 @@ def notifier(sender, **kwargs):
     obj = kwargs.pop('obj', None)
     obj_text = kwargs.pop('obj_text', None)
     obj_url = kwargs.pop('obj_url', None)
+
+    level = kwargs.pop('level', 'info')
 
     extra = kwargs.pop('extra', None)
 
@@ -58,8 +51,11 @@ def notifier(sender, **kwargs):
         raise TypeError(_("Supplied recipient is not an instance of list."))
 
     if recipient:
+        recipient_list = [recipient]
+
+    for user in recipient_list:
         notification = Notification(
-            recipient=recipient,
+            recipient=user,
             verb=verb, description=description, nf_type=nf_type,
             actor_content_object=actor, actor_text=actor_text,
             actor_url_text=actor_url,
@@ -68,25 +64,14 @@ def notifier(sender, **kwargs):
             target_url_text=target_url,
 
             obj_content_object=obj, obj_text=obj_text, obj_url_text=obj_url,
-            extra=extra
+            extra=extra, level=level
         )
-        saved_notification = notification.save()
-    else:
-        notifications = []
-        for recipient in recipient_list:
-            notifications.append(Notification(
-                recipient=recipient,
-                verb=verb, description=description, nf_type=nf_type,
-                actor_content_object=actor, actor_text=actor_text,
-                actor_url_text=actor_url,
-
-                target_content_object=target, target_text=target_text,
-                target_url_text=target_url,
-
-                obj_content_object=obj, obj_text=obj_text,
-                obj_url_text=obj_url,
-
-                extra=extra
-            ))
-        saved_notification = Notification.objects.bulk_create(notifications)
-    return saved_notification
+        # check that notification can be send
+        sent_at_least_once = False
+        for backend_id, backend_path in backends:
+            backend = import_callable(backend_path)(backend_id)
+            if backend.can_send(user, nf_type):
+                backend.deliver(user, notification)
+                sent_at_least_once = True
+        if sent_at_least_once:
+            notification.save()

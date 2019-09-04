@@ -7,7 +7,7 @@ About the app
 
 A normal web app with feature of social interaction requires to keep their users updated about recent happenings. For this, a notification system comes handy which stores numerous kinds of notifications and updates the user that a notification is received as soon as an action is performed.
 
-The sole purpose of ``django-notify-x`` is to add a *facebook-like* notification system functionality and give you the ability to control everything.
+The sole purpose of ``django-super-notifications`` is to add a *facebook-like* notification system functionality and give you the ability to control everything.
 
 **The key features of Django Notify are**:
 

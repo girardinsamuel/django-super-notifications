@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 import os
 from setuptools import setup, find_packages
-import notify as app
+import super_notifications as app
 
 
 install_requires = open('requirements.txt').read().splitlines()
@@ -15,16 +15,16 @@ def read(fname):
 
 
 setup(
-    name="django-notify-x",
+    name="super_notifications",
     version=app.__version__,
-    description='Notification sytem for Django',
+    description='Notification system for Django',
     long_description=read('README.rst'),
     license='The MIT License',
     platforms=['OS Independent'],
     keywords='django notifications, notify, facebook like notifications',
     author='Vikas Yadav',
-    author_email='v1k45x@gmail.com',
-    url="https://github.com/v1k45/django-notify-x",
+    author_email='samuelgirardin@gmail.com',
+    url="https://github.com/girardinsamuel/django-super-notifications",
     packages=find_packages(),
     package_data={'notify': ['static/notify/*js',
                              'templates/*.html',
@@ -33,7 +33,9 @@ setup(
                              'templates/notifications/includes/*.js']},
     include_package_data=True,
     install_requires=install_requires,
-
+    dependency_links=[
+        'git+https://github.com/blag/django-multiselectfield.git@django-2.0#egg=django-multiselectfield'
+    ],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Framework :: Django :: 1.8',

@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('notify', '0002_auto_20151221_0737'),
+        ('super_notifications', '0002_auto_20151221_0737'),
     ]
 
     operations = [

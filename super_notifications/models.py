@@ -10,6 +10,8 @@ from django.utils.timesince import timesince
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import force_text
 from django.utils.functional import cached_property
+from model_utils import Choices
+from multiselectfield import MultiSelectField
 
 from .utils import prefetch_relations
 
@@ -187,6 +189,7 @@ class Notification(models.Model):
     :deleted:   Useful when you want to *soft delete* your notifications.
 
     """
+    LEVELS = Choices('success', 'info', 'warning', 'error')
 
     recipient = models.ForeignKey(settings.AUTH_USER_MODEL,
                                   related_name='notifications',
@@ -222,10 +225,7 @@ class Notification(models.Model):
         max_length=255, blank=True, null=True,
         verbose_name=_('Description of the notification'))
 
-    nf_type = models.CharField(max_length=20, default='default',
-                               verbose_name=_('Type of notification'))
-
-    # TODO: Add a field to store notification cover images.
+    nf_type = models.CharField(verbose_name="Label du type de notification", max_length=40, default="default")
 
     # target attributes.
     target_content_type = models.ForeignKey(
@@ -233,8 +233,8 @@ class Notification(models.Model):
         related_name='notify_target', on_delete=models.CASCADE,
         verbose_name=_('Content type of target object'))
 
-    target_object_id = models.PositiveIntegerField(
-        null=True, blank=True,
+    target_object_id = models.CharField(
+        null=True, blank=True, max_length=50,
         verbose_name=_('ID of the target object'))
 
     target_content_object = GenericForeignKey('target_content_type',
@@ -270,6 +270,7 @@ class Notification(models.Model):
 
     extra = JSONField(null=True, blank=True,
                       verbose_name=_('JSONField to store addtional data'))
+    level = models.CharField(choices=LEVELS, default=LEVELS.info, max_length=20)
 
     # Advanced details.
     created = models.DateTimeField(auto_now=False, auto_now_add=True)
@@ -302,6 +303,41 @@ class Notification(models.Model):
                 return _(
                     "{actor} {verb} {obj} on {target} {at} ago").format(**ctx)
         return _("{description} -- {at} ago").format(**ctx)
+
+    @cached_property
+    def message(self):
+        ctx = {
+            'actor': self.actor_text or self.actor,
+            'verb': self.verb,
+            'target': self.target_text or self.target,
+            'obj': self.obj_text or self.obj
+        }
+
+        if ctx['actor']:
+            if not ctx['target']:
+                return "{actor} {verb}".format(**ctx)
+            elif not ctx['obj']:
+                return "{actor} {verb} {target}".format(**ctx)
+            elif ctx['obj']:
+                return "{actor} {verb} {obj} {target}".format(**ctx)
+        else:
+            if not ctx['target']:
+                return "{verb} {obj}".format(**ctx)
+            else:
+                return "{verb} {target}".format(**ctx)
+
+    @cached_property
+    def url(self):
+        if self.target_content_type == 34:
+            return {
+                'uuid': '',
+                'name': self.target_url_text
+            }
+        else:
+            return {
+                'name': self.target_url_text
+            }
+
 
     def mark_as_read(self):
         """
@@ -424,3 +460,43 @@ class Notification(models.Model):
             "data": self.extra,
         }
         return data
+
+
+class NotificationType(models.Model):
+    label = models.CharField(verbose_name="Label", max_length=40)
+    description = models.CharField(verbose_name="description", max_length=150)
+
+    def __str__(self):
+        return self.label
+
+    class Meta:
+        verbose_name = "Notification type"
+        verbose_name_plural = "Notification types"
+
+
+class NotificationSetting(models.Model):
+    """
+    Indicates, for a given user, whether to send notifications
+    of a given type to a given channel.
+    """
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        verbose_name="Utilisateur",
+        on_delete=models.CASCADE,
+        related_name="notifications_settings"
+    )
+    notification_type = models.ForeignKey(
+        NotificationType,
+        verbose_name="Type de notification",
+        on_delete=models.CASCADE
+    )
+    channels = MultiSelectField(verbose_name="Canaux autorisés pour ce type de notification",
+                                max_length=20, choices=settings.NOTIFICATIONS_BACKENDS,
+                                default='dashboard')
+    disabled = models.BooleanField(verbose_name="Désactivation de ce type de notification", default=False)
+
+    class Meta:
+        verbose_name = "Notification setting"
+        verbose_name_plural = "Notification settings"
+        unique_together = ("user", "notification_type")
