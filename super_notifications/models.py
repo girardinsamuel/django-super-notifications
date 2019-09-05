@@ -271,7 +271,6 @@ class Notification(models.Model):
     extra = JSONField(null=True, blank=True,
                       verbose_name=_('JSONField to store addtional data'))
     level = models.CharField(choices=LEVELS, default=LEVELS.info, max_length=20)
-
     # Advanced details.
     created = models.DateTimeField(auto_now=False, auto_now_add=True)
     read = models.BooleanField(default=False,
@@ -328,9 +327,11 @@ class Notification(models.Model):
 
     @cached_property
     def url(self):
-        if self.target_content_type == 34:
+        if self.target_content_type == ContentType.objects.get(model='consultation'):
             return {
-                'uuid': '',
+                'params': {
+                    'uuid': self.target_object_id
+                },
                 'name': self.target_url_text
             }
         else:
@@ -465,6 +466,7 @@ class Notification(models.Model):
 class NotificationType(models.Model):
     label = models.CharField(verbose_name="Label", max_length=40)
     description = models.CharField(verbose_name="description", max_length=150)
+    manual = models.BooleanField(verbose_name='Tâche fermable manuellement', default=False)
 
     def __str__(self):
         return self.label

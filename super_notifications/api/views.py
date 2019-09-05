@@ -5,7 +5,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_200_OK
 
-from super_notifications.models import Notification
+from super_notifications.models import Notification, NotificationType
 from super_notifications.app_settings import NotificationSerializer
 
 
@@ -45,6 +45,8 @@ class NotificationsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
             try:
                 notification = Notification.objects.get(pk=notification_id,
                                                         recipient=request.user)
+                notification_type = NotificationType.objects.get(label=notification.nf_type, manual=True)
+
                 if action == 'read':
                     notification.mark_as_read()
                     msg = "Marked as read"
@@ -57,6 +59,9 @@ class NotificationsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
             except Notification.DoesNotExist:
                 success = False
                 msg = "Notification does not exists."
+            except NotificationType.DoesNotExist:
+                success = False
+                msg = "Notification type not readable manually"
         else:
             success = False
             msg = "Invalid Notification ID"
