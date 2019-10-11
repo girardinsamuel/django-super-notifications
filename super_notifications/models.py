@@ -210,7 +210,7 @@ class Notification(models.Model):
                                              'actor_object_id')
 
     actor_text = models.CharField(
-        max_length=50, blank=True, null=True,
+        max_length=100, blank=True, null=True,
         verbose_name=_('Anonymous text for actor'))
 
     actor_url_text = models.CharField(
@@ -241,7 +241,7 @@ class Notification(models.Model):
                                               'target_object_id')
 
     target_text = models.CharField(
-        max_length=50, blank=True, null=True,
+        max_length=100, blank=True, null=True,
         verbose_name=_('Anonymous text for target'))
 
     target_url_text = models.CharField(
@@ -261,7 +261,7 @@ class Notification(models.Model):
     obj_content_object = GenericForeignKey('obj_content_type', 'obj_object_id')
 
     obj_text = models.CharField(
-        max_length=50, blank=True, null=True,
+        max_length=100, blank=True, null=True,
         verbose_name=_('Anonymous text for action object'))
 
     obj_url_text = models.CharField(
@@ -308,22 +308,27 @@ class Notification(models.Model):
         ctx = {
             'actor': self.actor_text or self.actor,
             'verb': self.verb,
-            'target': self.target_text or self.target,
+            'target': self.target,
+            'target_text': self.target_text,
             'obj': self.obj_text or self.obj
         }
 
         if ctx['actor']:
-            if not ctx['target']:
+            if not ctx['target_text'] and not ctx['obj']:
                 return "{actor} {verb}".format(**ctx)
+            elif not ctx['target_text']:
+                return "{actor} {verb} {obj}".format(**ctx)
             elif not ctx['obj']:
-                return "{actor} {verb} {target}".format(**ctx)
-            elif ctx['obj']:
-                return "{actor} {verb} {obj} {target}".format(**ctx)
-        else:
-            if not ctx['target']:
-                return "{verb} {obj}".format(**ctx)
+                return "{actor} {verb} {target_text}".format(**ctx)
             else:
-                return "{verb} {target}".format(**ctx)
+                return "{actor} {verb} {obj} {target_text}".format(**ctx)
+        else:
+            if not ctx['target_text']:
+                return "{verb} {obj}".format(**ctx)
+            elif not ctx['obj']:
+                return "{verb} {target_text}".format(**ctx)
+            else:
+                return "{verb} {obj} {target_text}".format(**ctx)
 
     @cached_property
     def url(self):

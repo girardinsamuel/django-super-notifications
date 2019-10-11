@@ -37,8 +37,8 @@ def notify_handler(sender, **kwargs):
     elif not recipient and not recipient_list:
         raise TypeError(_("You must specify the recipient of the notification."))
 
-    if not actor and not actor_text:
-        raise TypeError(_("Actor not specified."))
+    # if not actor and not actor_text:
+    #     raise TypeError(_("Actor not specified."))
 
     if not verb:
         raise TypeError(_("Verb not specified."))
