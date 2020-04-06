@@ -1,4 +1,4 @@
-django>=1.8
+django
 django-jsonfield
 six
 django-model-utils
